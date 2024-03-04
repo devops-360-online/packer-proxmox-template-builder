@@ -1,83 +1,122 @@
 #cloud-config
+
+# autoinstall:
+#   version: 1
+#   network:
+#     network:
+#       version: 2
+#       ethernets:
+#         eth0:
+#           dhcp4: yes
+#           dhcp-identifier: mac
+#   refresh-installer:
+#     update: yes
+#   timezone: Europe/Paris
+#   locale: fr_FR.UTF-8
+#   keyboard:
+#     layout: "fr"
+#     toggle: null
+#     variant: ''
+#   ssh:
+#     install-server: true
+#     allow-pw: true
+#     disable_root: false
+#     ssh_quiet_keygen: true
+#     allow_public_ssh_keys: true
+#     authorized-keys:
+#     - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBGFD5cpCfVV7ltpeHYOnVONAr95XqcRmqoGBTchQKrG non-interactive key"
+#   updates: security
+#   apt:
+#     geoip: true
+#     preserve_sources_list: false
+#     primary:
+#       - arches: [amd64]
+#         uri: "http://archive.ubuntu.com/ubuntu/"
+#   identity:
+#     hostname: ubuntu-server-jammy
+#     username: root
+#     password: '$y$j9T$Ht7UYyr0iHxvPC9gzZQCl1$mQe.T8pfy6ThzlbEULE0fk71zdofPwKaiZFF0l4VUT1'
+#   packages:
+#     - mc
+#     - curl
+#     - wget
+#     - sudo
+#     - tar
+#     - bzip2
+#     - build-essential
+#     - linux-image-virtual
+#     - linux-tools-virtual
+#     - net-tools
+#     - qemu-guest-agent
+#   late-commands:
+#   #- echo 'ubuntu ALL=(ALL) NOPASSWD:ALL' > /target/etc/sudoers.d/ubuntu
+#     - sed -ie 's/GRUB_CMDLINE_LINUX=.*/GRUB_CMDLINE_LINUX="net.ifnames=0 ipv6.disable=1 biosdevname=0 elevator=noop"/' /target/etc/default/grub
+#     - sed -ie 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /target/etc/ssh/sshd_config
+#     - sed -ie 's/#PubkeyAuthentication yes/PubkeyAuthentication yes/' /target/etc/ssh/sshd_config
+#     - sed -ie 's/#AllowAgentForwarding yes/AllowAgentForwarding yes/' /target/etc/ssh/sshd_config
+#     - curtin in-target -- update-grub2
+#     # virtual package is required for some cloud images. Lack of it causes failure in communication.
+#     - curtin in-target -- apt-get -y install linux-cloud-tools-virtual||true
+#     - curtin in-target -- systemctl enable qemu-guest-agent
+#     - curtin in-target -- apt-get update -y
+#     - curtin in-target -- apt-get install build-essential ssh curl rsync git unzip wget vim openssh-server software-properties-common qemu-guest-agent -y
+#     - curtin in-target --target=/target -- systemctl start qemu-guest-agent
+#     - curtin in-target --target=/target -- systemctl enable qemu-guest-agent  
+#   storage:
+#     layout:
+#       name: direct
+#     swap:
+#       size: 0 
+#   user-data:
+#     package_upgrade: false
+#     timezone: Europe/Paris
+#     users:
+#       - name: ubuntu
+#         groups: [adm, sudo]
+#         lock-passwd: false
+#         sudo: ALL=(ALL) NOPASSWD:ALL
+#         shell: /bin/bash
+#         passwd: ubuntu
+#         # - or -
+#         # ssh_authorized_keys:
+#         #   - your-ssh-key
+#   early-commands:
+#   - systemctl stop ssh
+
 autoinstall:
+  updates: security
+  apt:
+    disable_suites: [security]
   version: 1
-  network:
-    network:
-      version: 2
-      ethernets:
-        eth0:
-          dhcp4: yes
-          dhcp-identifier: mac
-  refresh-installer:
-    update: yes
+  locale: en_US
   timezone: Europe/Paris
-  locale: fr_FR.UTF-8
   keyboard:
-    layout: "fr"
-    toggle: null
-    variant: ''
+    layout: fr
   ssh:
     install-server: true
     allow-pw: true
     disable_root: false
     ssh_quiet_keygen: true
     allow_public_ssh_keys: true
-    authorized-keys:
-    - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBGFD5cpCfVV7ltpeHYOnVONAr95XqcRmqoGBTchQKrG non-interactive key"
-  updates: security
-  apt:
-    geoip: true
-    preserve_sources_list: false
-    primary:
-      - arches: [amd64]
-        uri: "http://archive.ubuntu.com/ubuntu/"
-  identity:
-    hostname: ubuntu-server-jammy
-    username: root
-    password: '$y$j9T$Ht7UYyr0iHxvPC9gzZQCl1$mQe.T8pfy6ThzlbEULE0fk71zdofPwKaiZFF0l4VUT1'
+    allow_password_authentication: true
   packages:
-    - mc
-    - curl
-    - wget
-    - sudo
-    - tar
-    - bzip2
-    - build-essential
-    - linux-image-virtual
-    - linux-tools-virtual
-    - net-tools
     - qemu-guest-agent
-  late-commands:
-  #- echo 'ubuntu ALL=(ALL) NOPASSWD:ALL' > /target/etc/sudoers.d/ubuntu
-    - sed -ie 's/GRUB_CMDLINE_LINUX=.*/GRUB_CMDLINE_LINUX="net.ifnames=0 ipv6.disable=1 biosdevname=0 elevator=noop"/' /target/etc/default/grub
-    - sed -ie 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /target/etc/ssh/sshd_config
-    - sed -ie 's/#PubkeyAuthentication yes/PubkeyAuthentication yes/' /target/etc/ssh/sshd_config
-    - sed -ie 's/#AllowAgentForwarding yes/AllowAgentForwarding yes/' /target/etc/ssh/sshd_config
-    - curtin in-target -- update-grub2
-    # virtual package is required for some cloud images. Lack of it causes failure in communication.
-    - curtin in-target -- apt-get -y install linux-cloud-tools-virtual||true
-    - curtin in-target -- systemctl enable qemu-guest-agent
-    - curtin in-target -- apt-get update -y
-    - curtin in-target -- apt-get install build-essential ssh curl rsync git unzip wget vim openssh-server software-properties-common qemu-guest-agent -y
-    - curtin in-target --target=/target -- systemctl start qemu-guest-agent
-    - curtin in-target --target=/target -- systemctl enable qemu-guest-agent  
+    - sudo
   storage:
     layout:
       name: direct
     swap:
-      size: 0 
+      size: 0
   user-data:
     package_upgrade: false
-    timezone: Europe/Paris
+    timezone: Europe/Istanbul
     users:
       - name: ubuntu
         groups: [adm, sudo]
         lock-passwd: false
         sudo: ALL=(ALL) NOPASSWD:ALL
         shell: /bin/bash
-        passwd: ubuntu
+        passwd: $6$xyz$lrzkz89JCrvzOPr56aXfFFqGZpBReOx5ndDu9m5CwVFWjZsEIhvVm.I5B4zMxJdcdTyAvncwjKT.dWcD/ZHIo.
         # - or -
         # ssh_authorized_keys:
-        #   - your-ssh-key
-  early-commands:
-  - systemctl stop ssh
+

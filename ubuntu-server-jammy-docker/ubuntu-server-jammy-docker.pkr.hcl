@@ -47,7 +47,7 @@ source "proxmox-iso" "ubuntu-server-jammy-docker" {
 
   # VM General Settings
   node                 = "proxmox"
-  vm_id                = "101"
+  vm_id                = "102"
   vm_name              = "ubuntu-server-jammy-docker"
   template_description = "Ubuntu Server jammy Image"
 
@@ -61,23 +61,6 @@ source "proxmox-iso" "ubuntu-server-jammy-docker" {
   iso_storage_pool = "local"
   unmount_iso      = true
 
-
-  ssh_port = 22
-
-  ssh_username = "ubuntu"
-
-  # (Option 1) Add your Password here
-  ssh_password = "ubuntu"
-  # - or -
-  # (Option 2) Add your Private SSH KEY file here
-  # ssh_private_key_file = "~/.ssh/id_rsa"
-  ssh_private_key_file   = pathexpand("./nik")
-  ssh_pty                = true
-  ssh_handshake_attempts  = "20"
-
-
-  # Raise the timeout, when installation takes longer
-  ssh_timeout = "20m"
 
   # VM System Settings 
   # Allowing direct communication between the host and the VM
@@ -115,6 +98,7 @@ source "proxmox-iso" "ubuntu-server-jammy-docker" {
   cloud_init_storage_pool = "local-lvm"
   
   
+  
 
 
 
@@ -133,23 +117,61 @@ source "proxmox-iso" "ubuntu-server-jammy-docker" {
 #        "ip=dhcp autoinstall ds=nocloud-net;seedfrom=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ ",
 #        "<enter><wait>",
 #    ]
-    boot_command = [
-    "<esc><enter><f6><esc><wait> ",
-    "<bs><bs><bs><bs><bs>",
-    "ip=dhcp ipv6.disable=1 ",
-    "autoinstall ds=nocloud-net;s=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ ",
-    "--- <enter>"
+
+  
+
+
+
+# PACKER Boot Commands
+#     boot_command = [
+#     "<esc><enter><f6><esc><wait> ",
+#     "<bs><bs><bs><bs><bs>",
+#     "ip=${var.vm_ip}::${var.vm_gateway}:${var.vm_netmask}::::${var.vm_dns} ",
+#     "autoinstall ds=nocloud-net;s=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ ",
+#     "--- <enter>"
+#   ]
+
+#   boot_command = [
+#        "<esc><wait><esc><wait><f6><wait><esc><wait>",
+#        "<bs><bs><bs><bs><bs>",
+#        "ip=dhcp autoinstall ds=nocloud-net;seedfrom=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ ",
+#        "<enter><wait>",
+#    ]
+  boot_command = [
+    "<esc><wait>",
+    "e<wait>",
+    "<down><down><down><end>",
+    "<bs><bs><bs><bs><wait>",
+    "autoinstall ds=nocloud-net\\;s=http://192.168.1.32:{{ .HTTPPort }}/ ---<wait>",
+    "<f10><wait>"
   ]
-    boot = "c"
-    boot_wait = "5s"
+
+  boot      = "c"
+  boot_wait = "5s"
 
   # PACKER Autoinstall Settings
   http_directory = "http"
   # (Optional) Bind IP Address and Port
-     http_bind_address = "0.0.0.0"
-     http_port_min     = 8802
-     http_port_max     = 8802
+  #http_bind_address = "0.0.0.0"
+  http_port_min = 8802
+  http_port_max = 8802
 
+  ssh_port = 22
+
+  ssh_username = "ubuntu"
+
+  # (Option 1) Add your Password here
+  ssh_password = "ubuntu"
+  # - or -
+  # (Option 2) Add your Private SSH KEY file here
+  # ssh_private_key_file = "~/.ssh/id_rsa"
+  ssh_private_key_file   = pathexpand("./nik")
+  ssh_pty                = true
+  ssh_handshake_attempts = "20"
+
+
+  # Raise the timeout, when installation takes longer
+  ssh_timeout = "20m"
 
 }
 
