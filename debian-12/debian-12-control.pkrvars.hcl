@@ -1,6 +1,6 @@
 bios_type                = "seabios"
 boot_command             = "<esc><wait>auto console-keymaps-at/keymap=fr console-setup/ask_detect=false debconf/frontend=noninteractive fb=false url=http://192.168.1.151:{{ .HTTPPort }}/preseed.cfg<enter>"
-boot_wait                = "5s"
+boot_wait                = "10s"
 bridge_name              = "vmbr0"
 bridge_firewall          = false
 cloud_init               = true
@@ -24,11 +24,11 @@ proxmox_node             = "proxmox-node01"
 qemu_agent_activation    = true
 scsi_controller_type     = "virtio-scsi-pci"
 ssh_handshake_attempts   = 6
-ssh_timeout              = "10m"
+ssh_timeout              = "20m"
 ssh_username             = "root"
 ssh_password             = "packer"
-storage_pool             = "vm"
+storage_pool             = "local-lvm"
 tags                     = "template"
-vm_id                    = 100
+vm_id                    = 103
 vm_info                  = "Debian 12 Packer Template"
 vm_name                  = "control"
