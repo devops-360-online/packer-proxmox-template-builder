@@ -1,0 +1,65 @@
+name: Packer Build
+
+on:
+  workflow_dispatch:
+    inputs:
+      folder:
+        description: 'Choose the folder to build the VM from'
+        required: false
+        default: 'ubuntu-server-jammy-docker'
+        type: choice
+        options:
+          - debian-12
+          - ubuntu-server-jammy-docker
+      debug:
+        description: 'Enable debug mode'
+        required: false
+        default: false
+        type: boolean
+
+jobs:
+  build:
+    runs-on: ["self-hosted", "Linux", "X64", "runner-proxmox"]
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Generate SSH key
+      working-directory: ${{ github.event.inputs.folder }}
+      run: |
+        ssh-keygen -t rsa -b 4096 -f ./nik -N ""
+        echo "::add-mask::$(cat ./nik)"
+        echo "::add-mask::$(cat ./nik.pub)"
+
+    - name: Set up environment variables
+      run: |
+        echo "PACKER_LOG_PATH=/var/log/packer.log" >> $GITHUB_ENV
+        echo "PACKER_LOG=1" >> $GITHUB_ENV
+
+    - name: Set up Packer
+      uses: hashicorp/setup-packer@v2
+
+    - name: Initialize Packer
+      working-directory: ${{ github.event.inputs.folder }}
+      run: |
+        packer init .
+
+    - name: Format Packer files
+      working-directory: ${{ github.event.inputs.folder }}
+      run: |
+        packer fmt .
+
+    - name: Validate Packer template
+      working-directory: ${{ github.event.inputs.folder }}
+      run: |
+        packer validate   --var-file="../credentials.pkr.hcl"  --var "proxmox_api_token_secret=${{ secrets.PROXMOX_API_TOKEN_SECRET }}"  "./${{ github.event.inputs.folder }}.pkr.hcl"
+
+    - name: Build Packer template
+      working-directory: ${{ github.event.inputs.folder }}
+      run: |
+        if [ "${{ github.event.inputs.debug }}" = "true" ]; then
+          packer build -debug --var-file="../credentials.pkr.hcl"  --var "proxmox_api_token_secret=${{ secrets.PROXMOX_API_TOKEN_SECRET }}"  "./${{ github.event.inputs.folder }}.pkr.hcl"
+        else
+          packer build --var-file="../credentials.pkr.hcl"  --var "proxmox_api_token_secret=${{ secrets.PROXMOX_API_TOKEN_SECRET }}"  "./${{ github.event.inputs.folder }}.pkr.hcl"
+        fi
