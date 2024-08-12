@@ -28,11 +28,11 @@ variable "vm_gateway" {
 
 
 variable "vm_netmask" {
-  default     = "255.255.255.0"
+  default = "255.255.255.0"
 }
 
 variable "vm_dns" {
-  default     = "192.168.1.254"
+  default = "192.168.1.254"
 }
 
 # Resource Definiation for the VM Template
@@ -46,7 +46,7 @@ source "proxmox-iso" "ubuntu-server-jammy-docker" {
   insecure_skip_tls_verify = true
 
   # VM General Settings
-  node                 = "proxmox"
+  node                 = "proxmox-node02"
   vm_id                = "102"
   vm_name              = "ubuntu-server-jammy-docker"
   template_description = "Ubuntu Server jammy Image"
@@ -56,8 +56,8 @@ source "proxmox-iso" "ubuntu-server-jammy-docker" {
   # iso_file = "local:iso/ubuntu-22.04-live-server-amd64.iso"
   # - or -
   # (Option 2) Download ISO
-  iso_url          = "https://cdimage.ubuntu.com/ubuntu-server/jammy/daily-live/current/jammy-live-server-amd64.iso"
-  iso_checksum     = "4688609dc9a1991021ec53e152cd19c88ee7b8200910def5bf9125b137380191"
+  iso_url          = "https://cdimage.ubuntu.com/ubuntu-server/jammy/daily-live/20240812/jammy-live-server-amd64.iso"
+  iso_checksum     = "dc61f8fbd1b62df36a0cc0fd8dc648b8a4b6836343e2c404241c764f815f6455"
   iso_storage_pool = "local"
   unmount_iso      = true
 
@@ -96,53 +96,53 @@ source "proxmox-iso" "ubuntu-server-jammy-docker" {
   # VM Cloud-Init Settings
   cloud_init              = true
   cloud_init_storage_pool = "local-lvm"
-  
-  
-  
 
 
 
-# PACKER Boot Commands
-#     boot_command = [
-#     "<esc><enter><f6><esc><wait> ",
-#     "<bs><bs><bs><bs><bs>",
-#     "ip=${var.vm_ip}::${var.vm_gateway}:${var.vm_netmask}::::${var.vm_dns} ",
-#     "autoinstall ds=nocloud-net;s=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ ",
-#     "--- <enter>"
-#   ]
-
-#   boot_command = [
-#        "<esc><wait><esc><wait><f6><wait><esc><wait>",
-#        "<bs><bs><bs><bs><bs>",
-#        "ip=dhcp autoinstall ds=nocloud-net;seedfrom=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ ",
-#        "<enter><wait>",
-#    ]
-
-  
 
 
 
-# PACKER Boot Commands
-#     boot_command = [
-#     "<esc><enter><f6><esc><wait> ",
-#     "<bs><bs><bs><bs><bs>",
-#     "ip=${var.vm_ip}::${var.vm_gateway}:${var.vm_netmask}::::${var.vm_dns} ",
-#     "autoinstall ds=nocloud-net;s=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ ",
-#     "--- <enter>"
-#   ]
+  # PACKER Boot Commands
+  #     boot_command = [
+  #     "<esc><enter><f6><esc><wait> ",
+  #     "<bs><bs><bs><bs><bs>",
+  #     "ip=${var.vm_ip}::${var.vm_gateway}:${var.vm_netmask}::::${var.vm_dns} ",
+  #     "autoinstall ds=nocloud-net;s=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ ",
+  #     "--- <enter>"
+  #   ]
 
-#   boot_command = [
-#        "<esc><wait><esc><wait><f6><wait><esc><wait>",
-#        "<bs><bs><bs><bs><bs>",
-#        "ip=dhcp autoinstall ds=nocloud-net;seedfrom=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ ",
-#        "<enter><wait>",
-#    ]
+  #   boot_command = [
+  #        "<esc><wait><esc><wait><f6><wait><esc><wait>",
+  #        "<bs><bs><bs><bs><bs>",
+  #        "ip=dhcp autoinstall ds=nocloud-net;seedfrom=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ ",
+  #        "<enter><wait>",
+  #    ]
+
+
+
+
+
+  # PACKER Boot Commands
+  #     boot_command = [
+  #     "<esc><enter><f6><esc><wait> ",
+  #     "<bs><bs><bs><bs><bs>",
+  #     "ip=${var.vm_ip}::${var.vm_gateway}:${var.vm_netmask}::::${var.vm_dns} ",
+  #     "autoinstall ds=nocloud-net;s=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ ",
+  #     "--- <enter>"
+  #   ]
+
+  #   boot_command = [
+  #        "<esc><wait><esc><wait><f6><wait><esc><wait>",
+  #        "<bs><bs><bs><bs><bs>",
+  #        "ip=dhcp autoinstall ds=nocloud-net;seedfrom=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ ",
+  #        "<enter><wait>",
+  #    ]
   boot_command = [
     "<esc><wait>",
     "e<wait>",
     "<down><down><down><end>",
     "<bs><bs><bs><bs><wait>",
-    "autoinstall ds=nocloud-net\\;s=http://192.168.1.32:{{ .HTTPPort }}/ ---<wait>",
+    "autoinstall ds=nocloud-net\\;s=http://192.168.1.3:{{ .HTTPPort }}/ ---<wait>",
     "<f10><wait>"
   ]
 

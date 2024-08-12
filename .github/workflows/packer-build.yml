@@ -38,7 +38,7 @@ jobs:
         echo "PACKER_LOG=1" >> $GITHUB_ENV
 
     - name: Set up Packer
-      uses: hashicorp/setup-packer@v2
+      uses: hashicorp/setup-packer@v3.1.0
 
     - name: Initialize Packer
       working-directory: ${{ github.event.inputs.folder }}
