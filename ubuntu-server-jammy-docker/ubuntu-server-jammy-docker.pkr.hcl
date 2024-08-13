@@ -56,8 +56,8 @@ source "proxmox-iso" "ubuntu-server-jammy-docker" {
   # iso_file = "local:iso/ubuntu-22.04-live-server-amd64.iso"
   # - or -
   # (Option 2) Download ISO
-  iso_url          = "https://cdimage.ubuntu.com/ubuntu-server/jammy/daily-live/20240812/jammy-live-server-amd64.iso"
-  iso_checksum     = "dc61f8fbd1b62df36a0cc0fd8dc648b8a4b6836343e2c404241c764f815f6455"
+  iso_url          = "https://cdimage.ubuntu.com/ubuntu-server/jammy/daily-live/20231208/jammy-live-server-amd64.iso"
+  iso_checksum     = "85821c7d19ea4dd33caa56ccd8a2fcca9e83ecc3700e93bce6cc0f82128da3fc"
   iso_storage_pool = "local"
   unmount_iso      = true
 
