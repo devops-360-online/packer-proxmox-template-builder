@@ -142,7 +142,7 @@ source "proxmox-iso" "ubuntu-server-jammy-docker" {
     "e<wait>",
     "<down><down><down><end>",
     "<bs><bs><bs><bs><wait>",
-    "autoinstall ds=nocloud-net\\;s=http://192.168.1.3:{{ .HTTPPort }}/ ---<wait>",
+    "autoinstall ds=nocloud-net\\;s=http://192.168.1.195:{{ .HTTPPort }}/ ---<wait>",
     "<f10><wait>"
   ]
 
